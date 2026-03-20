@@ -1,0 +1,161 @@
+experiment_group: slotcurri
+experiment_name: movi_c
+
+globals:
+  NUM_SLOTS: 11
+  SLOT_DIM: 64
+  DINO_MODEL: vit_small_patch14_dinov2
+  FEAT_DIM: 384
+  NUM_PATCHES: 576
+  NUM_GPUS: 2
+  BATCH_SIZE_PER_GPU: 64
+  TOTAL_BATCH_SIZE: "${mul: ${.NUM_GPUS}, ${.BATCH_SIZE_PER_GPU}}"
+  BASE_LR: 0.0001
+
+trainer:
+  max_steps: 100000
+  log_every_n_steps: 2500
+  val_check_interval: 2500
+  gradient_clip_val: 0.05
+
+optimizer:
+  name: Adam
+  lr: 0.0008
+  lr_scheduler:
+    name: exp_decay_with_warmup
+    warmup_steps: 2500
+    decay_steps: ${trainer.max_steps}
+
+model:
+  experiment_name: ${experiment_name}
+  experiment_group: ${experiment_group}
+  input_type: video
+  max_steps: 100000
+  visualize: true
+  visualize_every_n_steps: 10000
+  losses:
+    loss_featrec:
+      name: MSELoss
+      pred_dims:
+        - 0
+        - ${globals.FEAT_DIM}
+    loss_ssim:
+      name: SSIMLoss
+      pred_key: encoder.SSIM_recon
+      target_key: encoder.SSIM_orig
+      pred_dims:
+        - 0
+        - ${globals.FEAT_DIM}
+    loss_ss:
+      name: Slot_Slot_Contrastive_Loss
+      pred_key: processor.state
+      temperature: 0.1
+      batch_contrast: true
+      patch_inputs: false
+      keep_input_dim: true
+
+  loss_weights:
+    loss_featrec: 1.0
+    loss_ssim: 0.05
+    loss_ss: 0.5
+
+  initializer:
+    name: FixedLearnedInit
+    n_slots: ${globals.NUM_SLOTS}
+    dim: ${globals.SLOT_DIM}
+
+  encoder:
+    backbone:
+      name: TimmExtractor
+      model: ${globals.DINO_MODEL}
+      features:
+      - vit_block12
+      - vit_block_keys12
+      frozen: true
+      pretrained: true
+      model_kwargs:
+        dynamic_img_size: True
+    output_transform:
+      name: networks.two_layer_mlp
+      inp_dim: ${globals.FEAT_DIM}
+      outp_dim: ${globals.SLOT_DIM}
+      hidden_dim: "${mul: ${globals.FEAT_DIM}, 2}"
+      layer_norm: true
+
+  grouper:
+    name: SlotAttention
+    inp_dim: ${globals.SLOT_DIM}
+    slot_dim: ${globals.SLOT_DIM}
+    n_iters: 2
+    use_mlp: true
+
+  latent_processor:
+    first_step_corrector_args:
+      n_iters: 3
+
+  decoder:
+    name: MLPDecoder
+    inp_dim: ${globals.SLOT_DIM}
+    outp_dim: ${globals.FEAT_DIM}
+    hidden_dims: [1024, 1024, 1024]
+    n_patches: ${globals.NUM_PATCHES}
+
+  predictor:
+    name: networks.TransformerEncoder
+    dim: ${globals.SLOT_DIM}
+    n_blocks: 1
+    n_heads: 4
+
+val_metrics:
+  ari:
+    name: VideoARI
+    ignore_background: true
+    pred_key: decoder_masks_hard
+    true_key: segmentations
+  image_ari:
+    name: ImageARI
+    ignore_background: true
+    video_input: true
+    pred_key: decoder_masks_hard
+    true_key: segmentations
+  mbo:
+    name: VideoIoU
+    matching: overlap
+    ignore_background: true
+    pred_key: decoder_masks_hard
+    true_key: segmentations
+  image_mbo:
+    name: ImageIoU
+    matching: overlap
+    ignore_background: true
+    video_input: true
+    pred_key: decoder_masks_hard
+    true_key: segmentations
+
+dataset:
+  train_shards: "movi_c/movi_c-train-{000000..000304}.tar"
+  val_shards: "movi_c/movi_c-validation-{000000..000007}.tar"
+  batch_size: ${globals.BATCH_SIZE_PER_GPU}
+  val_batch_size: 16
+  val_size: 250
+  num_workers: 4
+  num_val_workers: 2
+  train_pipeline:
+    video_size: 24
+    chunk_size: 4
+    sample_one_chunk_per_video: true
+    keys: [video]
+    shuffle_size: 512
+    transforms:
+      name: movi_train
+      type: video
+      input_size: 336
+      h_flip_prob: 0.5
+  val_pipeline:
+    use_chunks: false
+    keys: [video, segmentations]
+    transforms:
+      name: movi_val
+      type: video
+      input_size: 336
+      num_classes: 11
