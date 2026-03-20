@@ -28,7 +28,7 @@ Video Object‑Centric Learning seeks to decompose raw videos into a small set o
 | Component | Description |
 |---|---|
 | **Slot Curriculum** | Progressively allocates slots where reconstruction error is high |
-| **Structure-Aware Loss** | SSIM-based loss to sharpen semantic boundaries before slot expansion |
+| **Structure-Aware Loss** | SSIM-based loss to sharpen semantic boundaries for precise slot partitioning |
 | **Cyclic Inference** | Forward + backward temporal rolling for consistent slot representations |
 
 ---
