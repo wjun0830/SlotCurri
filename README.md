@@ -153,7 +153,12 @@ python save_ytvis2021.py  --split validation --maxcount 10 --resize --out-path <
 ## Citation
 
 ```bibtex
-
+@inproceedings{moon2026reconstruction,
+  title={Reconstruction-Guided Slot Curriculum: Addressing Object Over-Fragmentation in Video Object-Centric Learning},
+  author={Moon, WonJun and Seong, Hyun Seok and Heo, Jae-Pil},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2026}
+}
 ```
 
 ---
