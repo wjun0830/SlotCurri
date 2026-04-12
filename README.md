@@ -72,9 +72,9 @@ The datasets should be placed under a common root directory with the following s
 
 | Dataset | Download |
 |---|---|
-| YouTube-VIS 2021 | [Google Drive]([https://drive.google.com/file/d/1Iv-2zK6MnH0oDFTx9iBgQcPNh5PBzM7i/view?usp=sharing]) (26.43GB) |
-| MOVi-C | [Google Drive]([https://drive.google.com/file/d/1CvHkK0PhqHrC8MtMtFCXBEXZbyrC6-hH/view?usp=sharing]) (7.43GB) |
-| MOVi-E | [Google Drive]([https://drive.google.com/file/d/1qGXzMwEMbYRp7OH2GJlkS3lvZPv3grkt/view?usp=sharing]) (8.26GB) |
+| YouTube-VIS 2021 | [Google Drive](https://drive.google.com/file/d/1Iv-2zK6MnH0oDFTx9iBgQcPNh5PBzM7i/view?usp=sharing) (26.43GB) |
+| MOVi-C | [Google Drive](https://drive.google.com/file/d/1CvHkK0PhqHrC8MtMtFCXBEXZbyrC6-hH/view?usp=sharing) (7.43GB) |
+| MOVi-E | [Google Drive](https://drive.google.com/file/d/1qGXzMwEMbYRp7OH2GJlkS3lvZPv3grkt/view?usp=sharing) (8.26GB) |
 
 > See [Dataset Preparation](#dataset-preparation) below for download and preprocessing instructions.
 
