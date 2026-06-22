@@ -20,6 +20,12 @@ Sungkyunkwan University
 
 ---
 
+## News
+
+- **[2026.06]** [SSync: Selective Synergistic Learning for Video Object-Centric Learning](https://arxiv.org/abs/2606.15527v1) has been accepted at **ECCV 2026**! [[Project Page]](https://wjun0830.github.io/SSync) [[arXiv]](https://arxiv.org/abs/2606.15527v1) [[Code]](https://github.com/wjun0830/SSync)
+
+---
+
 ### Real-world YouTube-VIS 2021
 
 ![YouTube-VIS Results](assets/ytvis.png)
@@ -29,6 +35,7 @@ Sungkyunkwan University
 ![MOVi-C Results](assets/movic.png)
 
 ---
+
 ## Abstract
 
 Video Object‑Centric Learning seeks to decompose raw videos into a small set of object slots, but existing slot‑attention models often suffer from severe over‑fragmentation. This is because the model is implicitly encouraged to occupy all slots to minimize the reconstruction objective, thereby representing a single object with multiple redundant slots. We tackle this limitation with a reconstruction‑guided slot curriculum (SlotCurri). Training starts with only a few coarse slots and progressively allocates new slots where reconstruction error remains high, thus expanding capacity only where it is needed and preventing fragmentation from the outset. Yet, during slot expansion, meaningful sub‑parts can emerge only if coarse‑level semantics are already well separated; however, with a small initial slot budget and an MSE objective, semantic boundaries remain blurry. Therefore, we augment MSE with a structure‑aware loss that preserves local contrast and edge information to encourage each slot to sharpen its semantic boundaries. Lastly, we propose a cyclic inference that rolls slots forward and then backward through the frame sequence, producing temporally consistent object representations even in the earliest frames. All combined, SlotCurri addresses object over-fragmentation by allocating representational capacity where reconstruction fails, further enhanced by structural cues and cyclic inference. Notable FG-ARI gains of +6.8 on YouTube-VIS and +8.3 on MOVi-C validate the effectiveness of SlotCurri.
